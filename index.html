@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>เมนูอาหาร ครัวออนซอน</title>
+    <style>
+        :root {
+            --primary: #D4AF37; /* สีทอง */
+            --bg-color: #040D1A; /* สีน้ำเงินเข้ม */
+            --card-bg: #112240;
+            --text-color: #FFF0A8;
+        }
+        body {
+            font-family: 'Sarabun', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background-color: #0A192F;
+            padding: 20px;
+            text-align: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+        }
+        h1 { margin: 0; color: var(--primary); }
+        .container {
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .category-title {
+            color: var(--primary);
+            border-bottom: 2px solid var(--primary);
+            padding-bottom: 5px;
+            margin-top: 30px;
+        }
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        .menu-card {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.5);
+            display: flex;
+            flex-direction: column;
+            border: 1px solid rgba(212, 175, 55, 0.2);
+        }
+        .menu-card img {
+            width: 100%;
+            height: 120px;
+            object-fit: cover;
+        }
+        .menu-info {
+            padding: 10px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        .menu-name {
+            font-weight: bold;
+            font-size: 14px;
+            margin-bottom: 5px;
+            color: var(--primary);
+        }
+        .menu-price {
+            font-size: 13px;
+            margin-top: auto;
+        }
+        .price-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 2px;
+        }
+        .sold-out {
+            color: #CF6679;
+            font-weight: bold;
+            font-size: 12px;
+        }
+        .loading {
+            text-align: center;
+            padding: 50px;
+            font-size: 18px;
+            color: var(--primary);
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>เมนูอาหาร ครัวออนซอน</h1>
+    </header>
+    <div class="container" id="menu-container">
+        <div class="loading" id="loading">กำลังโหลดเมนูอาหาร...</div>
+    </div>
+
+    <script>
+        // *** วาง URL ของ Google Apps Script ของคุณที่นี่ ***
+        const API_URL = 'https://script.google.com/macros/s/AKfycbzoqRIKcljK_x6BnOMK85RemWGrr7eoAZOe7nKYnW_keJdp7FkLAeNQAGYNM8JziY2-/exec';
+
+        async function loadMenu() {
+            try {
+                // เติม ?action=get_menu เพื่อบอกให้ Apps Script ส่งข้อมูลกลับมา
+                const response = await fetch(API_URL + '?action=get_menu');
+                const data = await response.json();
+                
+                document.getElementById('loading').style.display = 'none';
+                renderMenu(data);
+            } catch (error) {
+                document.getElementById('loading').innerText = 'ไม่สามารถโหลดข้อมูลได้ กรุณาลองใหม่อีกครั้ง';
+                console.error('Error fetching menu:', error);
+            }
+        }
+
+        function renderMenu(items) {
+            const container = document.getElementById('menu-container');
+            
+            // จัดกลุ่มตามหมวดหมู่
+            const groupedMenu = items.reduce((acc, item) => {
+                if (!acc[item.category]) {
+                    acc[item.category] = [];
+                }
+                acc[item.category].push(item);
+                return acc;
+            }, {});
+
+            // สร้าง HTML
+            for (const category in groupedMenu) {
+                const catTitle = document.createElement('h2');
+                catTitle.className = 'category-title';
+                catTitle.innerText = category;
+                container.appendChild(catTitle);
+
+                const grid = document.createElement('div');
+                grid.className = 'menu-grid';
+
+                groupedMenu[category].forEach(item => {
+                    const card = document.createElement('div');
+                    card.className = 'menu-card';
+                    
+                    let priceHtml = '';
+                    if (!item.isAvailable) {
+                        priceHtml = `<div class="sold-out">สินค้าหมด</div>`;
+                    } else if (item.hasSideDish) {
+                        priceHtml = `
+                            <div class="price-row"><span>กับข้าว:</span> <span>฿${item.sideDishNormalPrice}${item.hasSpecialPrice ? ' / ฿' + item.sideDishSpecialPrice : ''}</span></div>
+                            <div class="price-row"><span>ราดข้าว:</span> <span>฿${item.normalPrice}${item.hasSpecialPrice ? ' / ฿' + item.specialPrice : ''}</span></div>
+                        `;
+                    } else {
+                        priceHtml = `<div class="price-row"><span>ธรรมดา:</span> <span>฿${item.normalPrice}</span></div>`;
+                        if (item.hasSpecialPrice) {
+                            priceHtml += `<div class="price-row"><span>พิเศษ:</span> <span>฿${item.specialPrice}</span></div>`;
+                        }
+                    }
+
+                    card.innerHTML = `
+                        <img src="${item.imageUrl}" alt="${item.name}" onerror="this.src='https://via.placeholder.com/200?text=No+Image'">
+                        <div class="menu-info">
+                            <div class="menu-name">${item.name}</div>
+                            <div class="menu-price">${priceHtml}</div>
+                        </div>
+                    `;
+                    grid.appendChild(card);
+                });
+                container.appendChild(grid);
+            }
+        }
+
+        // เรียกใช้งานตอนเปิดหน้าเว็บ
+        loadMenu();
+    </script>
+</body>
+</html>
