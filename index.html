@@ -3,13 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>เมนูอาหาร ครัวออนซอน</title>
+    <!-- ป้องกันการบล็อกรูปภาพจาก Google Drive -->
+    <meta name="referrer" content="no-referrer">
+    <title>ครัวออนซอน - เมนูอาหารออนไลน์</title>
     <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary: #1e7e34; /* สีเขียวสดใสเหมือนในรูป */
-            --primary-dark: #155724;
-            --bg-page: #f4f5f7;
+            --primary: #107c41; /* เขียวสดใส */
+            --primary-dark: #0b5e31;
+            --gold: #d4af37;
+            --bg-dark: #121820;
             --text-main: #1f2937;
             --text-muted: #6b7280;
         }
@@ -23,40 +26,39 @@
         }
 
         body {
-            background-color: #2b2b2b;
+            background-color: var(--bg-dark);
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
         }
 
-        /* จำลองกรอบจอมือถือ */
         .mobile-container {
             width: 100%;
-            max-width: 420px;
+            max-width: 430px;
             height: 100vh;
-            max-height: 860px;
+            max-height: 890px;
             background-color: #fff;
             position: relative;
             overflow: hidden;
             display: flex;
             flex-direction: column;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.4);
         }
 
         @media (max-width: 480px) {
             .mobile-container {
                 max-height: 100vh;
-                border-radius: 0;
+                box-shadow: none;
             }
         }
 
-        /* ส่วนแสดงภาพอาหารขนาดใหญ่ (Hero) */
+        /* 1. ส่วนรูปภาพเด่นขนาดใหญ่ (Hero) */
         .hero-section {
             width: 100%;
-            height: 52%;
+            height: 48%;
             position: relative;
-            background-color: #eee;
+            background-color: #1a222d;
             overflow: hidden;
         }
 
@@ -64,111 +66,180 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
-            transition: all 0.4s ease;
+            transition: opacity 0.3s ease;
         }
 
-        .top-nav {
+        /* แถบหัวด้านบน: โลโก้ร้าน และ หมวดหมู่ */
+        .top-bar {
             position: absolute;
-            top: 20px;
-            left: 20px;
-            right: 20px;
+            top: 16px;
+            left: 16px;
+            right: 16px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             z-index: 10;
         }
 
+        /* โลโก้ร้านแบบมินิมอล ไม่เกะกะตา */
+        .shop-brand {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(18, 24, 32, 0.75);
+            backdrop-filter: blur(8px);
+            padding: 4px 12px 4px 4px;
+            border-radius: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+        }
+
+        .shop-logo {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 1.5px solid var(--gold);
+        }
+
+        .shop-title {
+            color: #fff;
+            font-size: 13px;
+            font-weight: 600;
+            letter-spacing: 0.2px;
+        }
+
+        .hero-badge {
+            background: rgba(18, 24, 32, 0.75);
+            backdrop-filter: blur(8px);
+            color: var(--gold);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            border: 1px solid rgba(212, 175, 55, 0.3);
+        }
+
+        /* ปุ่มเลื่อนภาพ ซ้าย-ขวา กลางจอ */
         .nav-btn {
-            width: 40px;
-            height: 40px;
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 38px;
+            height: 38px;
             background: rgba(255, 255, 255, 0.85);
-            backdrop-filter: blur(5px);
+            backdrop-filter: blur(4px);
             border-radius: 50%;
             display: flex;
             justify-content: center;
             align-items: center;
-            cursor: pointer;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-            font-size: 18px;
             border: none;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            font-size: 16px;
+            z-index: 10;
         }
+        .nav-prev { left: 12px; }
+        .nav-next { right: 12px; }
 
-        .category-badge {
-            background: rgba(0, 0, 0, 0.6);
-            color: #fff;
-            padding: 6px 14px;
-            border-radius: 20px;
-            font-size: 13px;
-            backdrop-filter: blur(5px);
-        }
-
-        /* แผ่นการ์ดด้านล่าง (Bottom Sheet) */
-        .detail-card {
+        /* 2. การ์ดรายละเอียดด้านล่าง (Bottom Sheet) */
+        .detail-sheet {
             width: 100%;
-            height: 48%;
+            height: 52%;
             background: #ffffff;
-            border-top-left-radius: 30px;
-            border-top-right-radius: 30px;
-            margin-top: -30px;
+            border-top-left-radius: 28px;
+            border-top-right-radius: 28px;
+            margin-top: -24px;
             position: relative;
             z-index: 5;
-            padding: 24px 20px 20px 20px;
+            padding: 20px 20px 16px 20px;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            box-shadow: 0 -6px 20px rgba(0,0,0,0.06);
+            box-shadow: 0 -8px 25px rgba(0,0,0,0.08);
         }
 
-        .title-row {
+        /* ชื่อเมนู และ ราคา */
+        .header-row {
             display: flex;
             justify-content: space-between;
             align-items: flex-start;
+            gap: 12px;
         }
 
-        .item-name {
+        .menu-name {
             font-size: 20px;
             font-weight: 700;
             color: var(--text-main);
-            line-height: 1.3;
-            max-width: 68%;
+            line-height: 1.25;
+            flex: 1;
         }
 
-        .item-price {
-            font-size: 26px;
-            font-weight: 700;
-            color: var(--primary);
+        .price-box {
             text-align: right;
             white-space: nowrap;
         }
 
-        .item-desc {
-            font-size: 13px;
-            color: var(--text-muted);
-            margin-top: 4px;
+        .menu-price {
+            font-size: 26px;
+            font-weight: 700;
+            color: var(--primary);
+            line-height: 1;
         }
 
-        /* แถบ Carousel เมนูย่อยแนวนอน */
+        .sub-price {
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-top: 3px;
+        }
+
+        /* แท็บหมวดหมู่อาหาร (เลื่อนซ้าย-ขวา) */
+        .category-scroll {
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            scrollbar-width: none;
+            margin: 10px 0 8px 0;
+            padding-bottom: 2px;
+        }
+        .category-scroll::-webkit-scrollbar { display: none; }
+
+        .cat-chip {
+            flex-shrink: 0;
+            padding: 6px 14px;
+            border-radius: 16px;
+            font-size: 12px;
+            font-weight: 500;
+            background-color: #f1f3f5;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .cat-chip.active {
+            background-color: var(--primary);
+            color: #fff;
+            font-weight: 600;
+        }
+
+        /* Carousel เมนูอาหารแบบรูปวงกลม */
         .carousel-title {
-            font-size: 13px;
+            font-size: 12px;
             font-weight: 600;
             color: var(--text-muted);
-            margin-top: 10px;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
         }
 
-        .carousel-container {
+        .carousel-track {
             display: flex;
             gap: 12px;
             overflow-x: auto;
-            padding-bottom: 8px;
             scrollbar-width: none;
+            padding-bottom: 4px;
         }
-        .carousel-container::-webkit-scrollbar {
-            display: none;
-        }
+        .carousel-track::-webkit-scrollbar { display: none; }
 
-        .thumbnail-card {
-            flex: 0 0 72px;
+        .thumb-item {
+            flex: 0 0 68px;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -176,29 +247,26 @@
             text-align: center;
             transition: transform 0.2s;
         }
+        .thumb-item:active { transform: scale(0.95); }
 
-        .thumbnail-card:active {
-            transform: scale(0.95);
-        }
-
-        .thumbnail-img-box {
-            width: 62px;
-            height: 62px;
+        .thumb-circle {
+            width: 58px;
+            height: 58px;
             border-radius: 50%;
             overflow: hidden;
+            background: #eee;
             border: 2px solid transparent;
-            background-color: #eee;
-            box-shadow: 0 3px 6px rgba(0,0,0,0.08);
-            margin-bottom: 6px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+            margin-bottom: 4px;
         }
 
-        .thumbnail-card.active .thumbnail-img-box {
+        .thumb-item.active .thumb-circle {
             border-color: var(--primary);
+            box-shadow: 0 4px 10px rgba(16, 124, 65, 0.35);
             transform: scale(1.05);
-            box-shadow: 0 4px 10px rgba(30, 126, 52, 0.3);
         }
 
-        .thumbnail-img-box img {
+        .thumb-circle img {
             width: 100%;
             height: 100%;
             object-fit: cover;
@@ -206,8 +274,8 @@
 
         .thumb-name {
             font-size: 11px;
-            color: var(--text-main);
             font-weight: 500;
+            color: var(--text-main);
             width: 100%;
             white-space: nowrap;
             overflow: hidden;
@@ -216,47 +284,39 @@
 
         .thumb-price {
             font-size: 11px;
-            color: var(--primary);
             font-weight: 700;
+            color: var(--primary);
         }
 
-        /* ปุ่มเขียวด้านล่าง */
-        .action-btn {
+        /* 3. ปุ่มกดโทรสั่งอาหารด้านล่าง */
+        .call-btn {
             width: 100%;
             background-color: var(--primary);
-            color: #ffffff;
-            border: none;
-            padding: 14px;
-            border-radius: 28px;
-            font-size: 16px;
-            font-weight: 600;
+            color: #fff;
+            padding: 13px;
+            border-radius: 26px;
             display: flex;
             justify-content: center;
             align-items: center;
-            gap: 8px;
-            cursor: pointer;
-            box-shadow: 0 4px 15px rgba(30, 126, 52, 0.35);
-            transition: background-color 0.2s;
-            margin-top: 5px;
+            gap: 10px;
             text-decoration: none;
+            font-size: 15px;
+            font-weight: 600;
+            box-shadow: 0 4px 14px rgba(16, 124, 65, 0.3);
+            margin-top: 6px;
         }
+        .call-btn:active { background-color: var(--primary-dark); }
 
-        .action-btn:active {
-            background-color: var(--primary-dark);
-        }
-
-        .loading-screen {
+        /* Loading */
+        .loading-box {
             position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
+            inset: 0;
             background: #fff;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            z-index: 50;
+            z-index: 100;
             gap: 12px;
             color: var(--text-muted);
         }
@@ -265,139 +325,223 @@
 <body>
 
 <div class="mobile-container">
-    <!-- หน้าจอโหลดข้อมูล -->
-    <div class="loading-screen" id="loading">
-        <div style="font-size: 28px;">⏳</div>
-        <div>กำลังโหลดเมนูอร่อย...</div>
+    <!-- หน้าจอตอนกำลังโหลด -->
+    <div class="loading-box" id="loading">
+        <div style="font-size: 32px;">🍲</div>
+        <div>กำลังเตรียมเมนูอร่อย...</div>
     </div>
 
-    <!-- ส่วนรูปภาพใหญ่ด้านบน -->
+    <!-- ส่วนรูปภาพใหญ่ Hero -->
     <div class="hero-section">
-        <div class="top-nav">
-            <button class="nav-btn" onclick="prevItem()">❮</button>
-            <div class="category-badge" id="heroCategory">หมวดหมู่</div>
-            <button class="nav-btn" onclick="nextItem()">❯</button>
+        <!-- แถบหัว: โลโก้ร้าน + ป้ายหมวดหมู่ -->
+        <div class="top-bar">
+            <div class="shop-brand">
+                <img class="shop-logo" id="shopLogo" src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=100" alt="โลโก้">
+                <span class="shop-title">ครัวออนซอน</span>
+            </div>
+            <div class="hero-badge" id="heroCategory">เมนูแนะนำ</div>
         </div>
-        <img id="heroImg" class="hero-img" src="" alt="Menu Image" onerror="this.src='https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=600'">
+
+        <button class="nav-btn nav-prev" onclick="prevMenu()">❮</button>
+        <button class="nav-btn nav-next" onclick="nextMenu()">❯</button>
+
+        <img id="heroImg" class="hero-img" src="" alt="อาหาร">
     </div>
 
     <!-- ส่วนรายละเอียดด้านล่าง -->
-    <div class="detail-card">
+    <div class="detail-sheet">
         <div>
-            <div class="title-row">
-                <div class="item-name" id="heroTitle">ชื่อเมนู</div>
-                <div class="item-price" id="heroPrice">฿0</div>
+            <!-- ชื่อ และ ราคา -->
+            <div class="header-row">
+                <div class="menu-name" id="heroName">ชื่ออาหาร</div>
+                <div class="price-box">
+                    <div class="menu-price" id="heroPrice">฿0</div>
+                    <div class="sub-price" id="heroSubPrice"></div>
+                </div>
             </div>
-            <div class="item-desc" id="heroDesc">อาหารสดใหม่ ปรุงจานต่อจาน</div>
+
+            <!-- แถบเลือกหมวดหมู่อาหาร -->
+            <div class="category-scroll" id="catScroll">
+                <!-- ชิปหมวดหมู่จะสร้างอัตโนมัติที่นี่ -->
+            </div>
         </div>
 
-        <!-- รายการเมนูย่อยแบบเลื่อนซ้าย-ขวา -->
+        <!-- รายการเมนูย่อยเลื่อนแนวนอน -->
         <div>
-            <div class="carousel-title">เลือกเมนูอื่น ๆ ในร้าน:</div>
-            <div class="carousel-container" id="thumbList">
-                <!-- รายการรูปย่อยจะถูกสร้างอัตโนมัติที่นี่ -->
+            <div class="carousel-title" id="carouselCount">เลือกเมนูอื่น ๆ:</div>
+            <div class="carousel-track" id="menuCarousel">
+                <!-- วงกลมเมนูจะสร้างอัตโนมัติที่นี่ -->
             </div>
         </div>
 
-        <!-- ปุ่มสั่งอาหาร (สามารถใส่ลิงก์ LINE หรือเบอร์โทรได้) -->
-        <a href="tel:0812345678" class="action-btn" id="actionBtn">
-            <span>📞 สั่งอาหารเลย</span>
+        <!-- ปุ่มโทรสั่งร้าน -->
+        <a href="tel:0812345678" class="call-btn" id="phoneCallBtn">
+            <span>📞 โทรสั่งอาหารทันที (<span id="phoneDisplay">081-234-5678</span>)</span>
         </a>
     </div>
 </div>
 
 <script>
-    // *** ใส่ URL ของ Google Apps Script ของคุณที่นี่ ***
+    // ==========================================
+    // ⚙️ ตั้งค่าข้อมูลร้านค้าของคุณที่นี่
+    // ==========================================
     const API_URL = 'https://script.google.com/macros/s/AKfycbzoqRIKcljK_x6BnOMK85RemWGrr7eoAZOe7nKYnW_keJdp7FkLAeNQAGYNM8JziY2-/exec';
+    const SHOP_PHONE = '0974624632'; // 👈 เปลี่ยนเป็นเบอร์โทรร้านจริงของคุณที่นี่ (เช่น 0891234567)
+    const SHOP_LOGO_URL = ''; // 👈 หากมีลิงก์โลโก้ร้าน ใส่ตรงนี้ได้เลยครับ (ถ้าเว้นว่างไว้จะใช้ภาพอาหารสวยๆ แทน)
 
-    let menuData = [];
+    // รูปภาพสำรองกรณีโหลดรูปไม่ได้
+    const FALLBACK_IMG = 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=600';
+
+    let allMenus = [];
+    let displayedMenus = [];
+    let currentCategory = 'ทั้งหมด';
     let currentIndex = 0;
 
-    async function fetchMenu() {
+    // ตั้งค่าเบอร์โทรที่ปุ่ม
+    document.getElementById('phoneCallBtn').href = `tel:${SHOP_PHONE}`;
+    document.getElementById('phoneDisplay').innerText = SHOP_PHONE;
+    if (SHOP_LOGO_URL) {
+        document.getElementById('shopLogo').src = SHOP_LOGO_URL;
+    }
+
+    // ฟังก์ชันแปลงลิงก์ Google Drive ให้เปิดบนเว็บได้แบบ 100%
+    function formatDriveImage(url) {
+        if (!url || url.trim() === '') return FALLBACK_IMG;
+        
+        // ถ้าเป็นลิงก์ Google Drive
+        if (url.includes('drive.google.com') || url.includes('lh3.googleusercontent.com')) {
+            const match = url.match(/\/d\/([a-zA-Z0-9_-]+)/);
+            if (match && match[1]) {
+                return `https://drive.google.com/thumbnail?id=${match[1]}&sz=w800`;
+            }
+        }
+        return url;
+    }
+
+    async function loadData() {
         try {
             const res = await fetch(API_URL + '?action=get_menu');
-            menuData = await res.json();
-            
-            if (menuData && menuData.length > 0) {
+            allMenus = await res.json();
+
+            if (allMenus && allMenus.length > 0) {
                 document.getElementById('loading').style.display = 'none';
-                renderThumbnails();
-                selectItem(0);
+                initCategories();
+                filterByCategory('ทั้งหมด');
             } else {
-                document.getElementById('loading').innerHTML = 'ไม่พบข้อมูลเมนู';
+                document.getElementById('loading').innerHTML = 'ยังไม่มีรายการเมนูอาหารในระบบ';
             }
-        } catch (e) {
-            document.getElementById('loading').innerHTML = 'โหลดข้อมูลไม่สำเร็จ';
-            console.error(e);
+        } catch (err) {
+            document.getElementById('loading').innerHTML = 'โหลดข้อมูลไม่สำเร็จ กรุณาลองใหม่อีกครั้ง';
+            console.error(err);
         }
     }
 
-    function renderThumbnails() {
-        const thumbList = document.getElementById('thumbList');
-        thumbList.innerHTML = '';
+    // สร้างแท็บหมวดหมู่
+    function initCategories() {
+        const catScroll = document.getElementById('catScroll');
+        const categories = ['ทั้งหมด', ...new Set(allMenus.map(m => m.category).filter(Boolean))];
 
-        menuData.forEach((item, index) => {
-            const card = document.createElement('div');
-            card.className = `thumbnail-card ${index === 0 ? 'active' : ''}`;
-            card.id = `thumb-${index}`;
-            card.onclick = () => selectItem(index);
-
-            const imgUrl = item.imageUrl || 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=200';
-            const price = item.normalPrice || 0;
-
-            card.innerHTML = `
-                <div class="thumbnail-img-box">
-                    <img src="${imgUrl}" onerror="this.src='https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=200'">
-                </div>
-                <div class="thumb-name">${item.name}</div>
-                <div class="thumb-price">฿${price}</div>
-            `;
-            thumbList.appendChild(card);
+        catScroll.innerHTML = '';
+        categories.forEach(cat => {
+            const chip = document.createElement('div');
+            chip.className = `cat-chip ${cat === currentCategory ? 'active' : ''}`;
+            chip.innerText = cat;
+            chip.onclick = () => filterByCategory(cat);
+            catScroll.appendChild(chip);
         });
     }
 
-    function selectItem(index) {
-        currentIndex = index;
-        const item = menuData[index];
+    // กรองเมนูตามหมวดหมู่
+    function filterByCategory(category) {
+        currentCategory = category;
+        document.querySelectorAll('.cat-chip').forEach(el => {
+            el.classList.toggle('active', el.innerText === category);
+        });
 
-        // ไฮไลต์เมนูที่เลือก
-        document.querySelectorAll('.thumbnail-card').forEach(el => el.classList.remove('active'));
-        const activeCard = document.getElementById(`thumb-${index}`);
-        if (activeCard) {
-            activeCard.classList.add('active');
-            activeCard.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+        if (category === 'ทั้งหมด') {
+            displayedMenus = allMenus;
+        } else {
+            displayedMenus = allMenus.filter(m => m.category === category);
         }
 
-        // อัปเดตข้อมูลขึ้นส่วนบน
-        const heroImg = document.getElementById('heroImg');
-        heroImg.style.opacity = '0.4';
-        setTimeout(() => {
-            heroImg.src = item.imageUrl || 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=600';
-            heroImg.style.opacity = '1';
-        }, 150);
+        document.getElementById('carouselCount').innerText = `รายการเมนูในหมวดนี้ (${displayedMenus.length} จาน):`;
+        renderCarousel();
+        selectMenu(0);
+    }
 
-        document.getElementById('heroTitle').innerText = item.name;
+    // สร้างแถบ Carousel เมนูย่อย
+    function renderCarousel() {
+        const track = document.getElementById('menuCarousel');
+        track.innerHTML = '';
+
+        displayedMenus.forEach((item, idx) => {
+            const div = document.createElement('div');
+            div.className = `thumb-item ${idx === 0 ? 'active' : ''}`;
+            div.id = `thumb-${idx}`;
+            div.onclick = () => selectMenu(idx);
+
+            const imgSrc = formatDriveImage(item.imageUrl);
+
+            div.innerHTML = `
+                <div class="thumb-circle">
+                    <img src="${imgSrc}" loading="lazy" onerror="this.src='${FALLBACK_IMG}'">
+                </div>
+                <div class="thumb-name">${item.name}</div>
+                <div class="thumb-price">฿${item.normalPrice || 0}</div>
+            `;
+            track.appendChild(div);
+        });
+    }
+
+    // เลือกเมนูมาโชว์ในภาพใหญ่
+    function selectMenu(idx) {
+        if (!displayedMenus[idx]) return;
+        currentIndex = idx;
+        const item = displayedMenus[idx];
+
+        // ไฮไลต์ปุ่มวงกลมที่เลือก พร้อมเลื่อนเข้ามาตรงกลาง
+        document.querySelectorAll('.thumb-item').forEach(el => el.classList.remove('active'));
+        const activeThumb = document.getElementById(`thumb-${idx}`);
+        if (activeThumb) {
+            activeThumb.classList.add('active');
+            activeThumb.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+        }
+
+        // เปลี่ยนภาพใหญ่พร้อมเอฟเฟกต์เฟด
+        const heroImg = document.getElementById('heroImg');
+        heroImg.style.opacity = '0.3';
+        setTimeout(() => {
+            heroImg.src = formatDriveImage(item.imageUrl);
+            heroImg.onerror = () => { heroImg.src = FALLBACK_IMG; };
+            heroImg.style.opacity = '1';
+        }, 120);
+
+        // อัปเดตข้อความ
+        document.getElementById('heroName').innerText = item.name;
         document.getElementById('heroPrice').innerText = `฿${item.normalPrice || 0}`;
         document.getElementById('heroCategory').innerText = item.category || 'เมนูแนะนำ';
-        
-        let desc = 'รสชาติอร่อยกลมกล่อม ปรุงสดใหม่ทุกวัน';
-        if (item.hasSpecialPrice) {
-            desc += ` • พิเศษ ฿${item.specialPrice}`;
+
+        // แสดงราคาย่อย (พิเศษ / กับข้าว)
+        let subText = '';
+        if (item.hasSideDish) {
+            subText = `ราดข้าว ฿${item.normalPrice} | กับข้าว ฿${item.sideDishNormalPrice || item.normalPrice}`;
+        } else if (item.hasSpecialPrice && item.specialPrice > 0) {
+            subText = `ธรรมดา ฿${item.normalPrice} | พิเศษ ฿${item.specialPrice}`;
         }
-        document.getElementById('heroDesc').innerText = desc;
+        document.getElementById('heroSubPrice').innerText = subText;
     }
 
-    function prevItem() {
-        if (currentIndex > 0) selectItem(currentIndex - 1);
-        else selectItem(menuData.length - 1);
+    function prevMenu() {
+        const newIdx = currentIndex > 0 ? currentIndex - 1 : displayedMenus.length - 1;
+        selectMenu(newIdx);
     }
 
-    function nextItem() {
-        if (currentIndex < menuData.length - 1) selectItem(currentIndex + 1);
-        else selectItem(0);
+    function nextMenu() {
+        const newIdx = currentIndex < displayedMenus.length - 1 ? currentIndex + 1 : 0;
+        selectMenu(newIdx);
     }
 
-    // เริ่มดึงข้อมูลเมื่อเปิดหน้าเว็บ
-    fetchMenu();
+    loadData();
 </script>
 
 </body>
