@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <!-- ป้องกันการบล็อกรูปภาพจาก Google Drive -->
+    <!-- สำคัญมาก: ป้องกัน Google Drive บล็อกภาพข้ามโดเมน -->
     <meta name="referrer" content="no-referrer">
     <title>ครัวออนซอน - เมนูอาหารออนไลน์</title>
     <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary: #107c41; /* เขียวสดใส */
+            --primary: #107c41;
             --primary-dark: #0b5e31;
             --gold: #d4af37;
             --bg-dark: #121820;
@@ -53,7 +53,7 @@
             }
         }
 
-        /* 1. ส่วนรูปภาพเด่นขนาดใหญ่ (Hero) */
+        /* ส่วนแสดงภาพ Hero ด้านบน */
         .hero-section {
             width: 100%;
             height: 48%;
@@ -66,10 +66,9 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
-            transition: opacity 0.3s ease;
+            transition: opacity 0.25s ease;
         }
 
-        /* แถบหัวด้านบน: โลโก้ร้าน และ หมวดหมู่ */
         .top-bar {
             position: absolute;
             top: 16px;
@@ -81,7 +80,6 @@
             z-index: 10;
         }
 
-        /* โลโก้ร้านแบบมินิมอล ไม่เกะกะตา */
         .shop-brand {
             display: flex;
             align-items: center;
@@ -120,7 +118,6 @@
             border: 1px solid rgba(212, 175, 55, 0.3);
         }
 
-        /* ปุ่มเลื่อนภาพ ซ้าย-ขวา กลางจอ */
         .nav-btn {
             position: absolute;
             top: 50%;
@@ -142,7 +139,7 @@
         .nav-prev { left: 12px; }
         .nav-next { right: 12px; }
 
-        /* 2. การ์ดรายละเอียดด้านล่าง (Bottom Sheet) */
+        /* แผ่นรายละเอียดด้านล่าง (Bottom Sheet) */
         .detail-sheet {
             width: 100%;
             height: 52%;
@@ -159,7 +156,6 @@
             box-shadow: 0 -8px 25px rgba(0,0,0,0.08);
         }
 
-        /* ชื่อเมนู และ ราคา */
         .header-row {
             display: flex;
             justify-content: space-between;
@@ -193,7 +189,7 @@
             margin-top: 3px;
         }
 
-        /* แท็บหมวดหมู่อาหาร (เลื่อนซ้าย-ขวา) */
+        /* แถบหมวดหมู่อาหาร (ไม่มี 'ทั้งหมด') */
         .category-scroll {
             display: flex;
             gap: 8px;
@@ -221,7 +217,7 @@
             font-weight: 600;
         }
 
-        /* Carousel เมนูอาหารแบบรูปวงกลม */
+        /* Carousel เมนูย่อย */
         .carousel-title {
             font-size: 12px;
             font-weight: 600;
@@ -288,7 +284,7 @@
             color: var(--primary);
         }
 
-        /* 3. ปุ่มกดโทรสั่งอาหารด้านล่าง */
+        /* ปุ่มโทร */
         .call-btn {
             width: 100%;
             background-color: var(--primary);
@@ -307,7 +303,6 @@
         }
         .call-btn:active { background-color: var(--primary-dark); }
 
-        /* Loading */
         .loading-box {
             position: absolute;
             inset: 0;
@@ -325,7 +320,6 @@
 <body>
 
 <div class="mobile-container">
-    <!-- หน้าจอตอนกำลังโหลด -->
     <div class="loading-box" id="loading">
         <div style="font-size: 32px;">🍲</div>
         <div>กำลังเตรียมเมนูอร่อย...</div>
@@ -333,10 +327,9 @@
 
     <!-- ส่วนรูปภาพใหญ่ Hero -->
     <div class="hero-section">
-        <!-- แถบหัว: โลโก้ร้าน + ป้ายหมวดหมู่ -->
         <div class="top-bar">
             <div class="shop-brand">
-                <img class="shop-logo" id="shopLogo" src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=100" alt="โลโก้">
+                <img class="shop-logo" id="shopLogo" src="logo.png" onerror="this.src='https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=100'" alt="โลโก้">
                 <span class="shop-title">ครัวออนซอน</span>
             </div>
             <div class="hero-badge" id="heroCategory">เมนูแนะนำ</div>
@@ -348,10 +341,9 @@
         <img id="heroImg" class="hero-img" src="" alt="อาหาร">
     </div>
 
-    <!-- ส่วนรายละเอียดด้านล่าง -->
+    <!-- แผ่นรายละเอียดด้านล่าง -->
     <div class="detail-sheet">
         <div>
-            <!-- ชื่อ และ ราคา -->
             <div class="header-row">
                 <div class="menu-name" id="heroName">ชื่ออาหาร</div>
                 <div class="price-box">
@@ -360,60 +352,66 @@
                 </div>
             </div>
 
-            <!-- แถบเลือกหมวดหมู่อาหาร -->
-            <div class="category-scroll" id="catScroll">
-                <!-- ชิปหมวดหมู่จะสร้างอัตโนมัติที่นี่ -->
-            </div>
+            <!-- หมวดหมู่อาหาร -->
+            <div class="category-scroll" id="catScroll"></div>
         </div>
 
-        <!-- รายการเมนูย่อยเลื่อนแนวนอน -->
+        <!-- รายการ Carousel เมนูย่อย -->
         <div>
-            <div class="carousel-title" id="carouselCount">เลือกเมนูอื่น ๆ:</div>
-            <div class="carousel-track" id="menuCarousel">
-                <!-- วงกลมเมนูจะสร้างอัตโนมัติที่นี่ -->
-            </div>
+            <div class="carousel-title" id="carouselCount">เมนูในหมวดนี้:</div>
+            <div class="carousel-track" id="menuCarousel"></div>
         </div>
 
-        <!-- ปุ่มโทรสั่งร้าน -->
+        <!-- ปุ่มโทร -->
         <a href="tel:0812345678" class="call-btn" id="phoneCallBtn">
-            <span>📞 โทรสั่งอาหารทันที (<span id="phoneDisplay">081-234-5678</span>)</span>
+            <span>📞 โทรสั่งอาหาร (<span id="phoneDisplay">081-234-5678</span>)</span>
         </a>
     </div>
 </div>
 
 <script>
     // ==========================================
-    // ⚙️ ตั้งค่าข้อมูลร้านค้าของคุณที่นี่
+    // ⚙️ ตั้งค่าข้อมูลร้านค้าของคุณ
     // ==========================================
     const API_URL = 'https://script.google.com/macros/s/AKfycbzoqRIKcljK_x6BnOMK85RemWGrr7eoAZOe7nKYnW_keJdp7FkLAeNQAGYNM8JziY2-/exec';
-    const SHOP_PHONE = '0974624632'; // 👈 เปลี่ยนเป็นเบอร์โทรร้านจริงของคุณที่นี่ (เช่น 0891234567)
-    const SHOP_LOGO_URL = 'logo.png'; // 👈 หากมีลิงก์โลโก้ร้าน ใส่ตรงนี้ได้เลยครับ (ถ้าเว้นว่างไว้จะใช้ภาพอาหารสวยๆ แทน)
+    const SHOP_PHONE = '0974624632'; // 👈 ใส่เบอร์โทรร้านจริงของคุณ
+    const SHOP_LOGO_URL = 'logo.png'; // 👈 ไฟล์รูปโลโก้บน GitHub หรือ ลิงก์ URL
 
-    // รูปภาพสำรองกรณีโหลดรูปไม่ได้
+    // ภาพสำรองเมื่อไม่มีรูป
     const FALLBACK_IMG = 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=600';
 
     let allMenus = [];
     let displayedMenus = [];
-    let currentCategory = 'ทั้งหมด';
+    let currentCategory = '';
     let currentIndex = 0;
 
-    // ตั้งค่าเบอร์โทรที่ปุ่ม
+    // ติดตั้งข้อมูลหัวเว็บ
     document.getElementById('phoneCallBtn').href = `tel:${SHOP_PHONE}`;
     document.getElementById('phoneDisplay').innerText = SHOP_PHONE;
     if (SHOP_LOGO_URL) {
         document.getElementById('shopLogo').src = SHOP_LOGO_URL;
     }
 
-    // ฟังก์ชันแปลงลิงก์ Google Drive ให้เปิดบนเว็บได้แบบ 100%
-    function formatDriveImage(url) {
+    // ฟังก์ชันถอดรหัสและแปลงลิงก์ Google Drive ทุกรูปแบบให้เปิดดูบนเว็บได้ 100%
+    function getDriveId(url) {
+        if (!url) return null;
+        let match = url.match(/\/d\/([a-zA-Z0-9_-]+)/);
+        if (match && match[1]) return match[1];
+        match = url.match(/id=([a-zA-Z0-9_-]+)/);
+        if (match && match[1]) return match[1];
+        return null;
+    }
+
+    function formatDriveImage(url, useAlternative = false) {
         if (!url || url.trim() === '') return FALLBACK_IMG;
         
-        // ถ้าเป็นลิงก์ Google Drive
-        if (url.includes('drive.google.com') || url.includes('lh3.googleusercontent.com')) {
-            const match = url.match(/\/d\/([a-zA-Z0-9_-]+)/);
-            if (match && match[1]) {
-                return `https://drive.google.com/thumbnail?id=${match[1]}&sz=w800`;
+        const driveId = getDriveId(url);
+        if (driveId) {
+            // สลับลิงก์ตรงที่ผ่าน CDN ของ Google
+            if (useAlternative) {
+                return `https://drive.google.com/uc?export=view&id=${driveId}`;
             }
+            return `https://drive.google.com/thumbnail?id=${driveId}&sz=w800`;
         }
         return url;
     }
@@ -426,7 +424,6 @@
             if (allMenus && allMenus.length > 0) {
                 document.getElementById('loading').style.display = 'none';
                 initCategories();
-                filterByCategory('ทั้งหมด');
             } else {
                 document.getElementById('loading').innerHTML = 'ยังไม่มีรายการเมนูอาหารในระบบ';
             }
@@ -436,40 +433,42 @@
         }
     }
 
-    // สร้างแท็บหมวดหมู่
+    // สร้างแท็บหมวดหมู่ (ตัด "ทั้งหมด" ออก)
     function initCategories() {
         const catScroll = document.getElementById('catScroll');
-        const categories = ['ทั้งหมด', ...new Set(allMenus.map(m => m.category).filter(Boolean))];
+        // รวบรวมหมวดหมู่ที่ไม่ซ้ำ และไม่มี "ทั้งหมด"
+        const rawCats = [...new Set(allMenus.map(m => m.category).filter(Boolean))];
+        const categories = rawCats.filter(c => c !== 'ทั้งหมด');
 
         catScroll.innerHTML = '';
-        categories.forEach(cat => {
+        categories.forEach((cat, index) => {
             const chip = document.createElement('div');
-            chip.className = `cat-chip ${cat === currentCategory ? 'active' : ''}`;
+            chip.className = `cat-chip ${index === 0 ? 'active' : ''}`;
             chip.innerText = cat;
             chip.onclick = () => filterByCategory(cat);
             catScroll.appendChild(chip);
         });
+
+        // เลือกหมวดหมู่แรกเป็นค่าเริ่มต้น
+        if (categories.length > 0) {
+            filterByCategory(categories[0]);
+        }
     }
 
-    // กรองเมนูตามหมวดหมู่
+    // กรองเมนูตามหมวดที่เลือก
     function filterByCategory(category) {
         currentCategory = category;
         document.querySelectorAll('.cat-chip').forEach(el => {
             el.classList.toggle('active', el.innerText === category);
         });
 
-        if (category === 'ทั้งหมด') {
-            displayedMenus = allMenus;
-        } else {
-            displayedMenus = allMenus.filter(m => m.category === category);
-        }
-
-        document.getElementById('carouselCount').innerText = `รายการเมนูในหมวดนี้ (${displayedMenus.length} จาน):`;
+        displayedMenus = allMenus.filter(m => m.category === category);
+        document.getElementById('carouselCount').innerText = `${category} (${displayedMenus.length} จาน):`;
         renderCarousel();
         selectMenu(0);
     }
 
-    // สร้างแถบ Carousel เมนูย่อย
+    // สร้าง Carousel วงกลม
     function renderCarousel() {
         const track = document.getElementById('menuCarousel');
         track.innerHTML = '';
@@ -480,11 +479,13 @@
             div.id = `thumb-${idx}`;
             div.onclick = () => selectMenu(idx);
 
-            const imgSrc = formatDriveImage(item.imageUrl);
+            const primarySrc = formatDriveImage(item.imageUrl, false);
+            const altSrc = formatDriveImage(item.imageUrl, true);
 
             div.innerHTML = `
                 <div class="thumb-circle">
-                    <img src="${imgSrc}" loading="lazy" onerror="this.src='${FALLBACK_IMG}'">
+                    <img src="${primarySrc}" loading="lazy" 
+                         onerror="if(this.src!=='${altSrc}'){this.src='${altSrc}'}else{this.src='${FALLBACK_IMG}'}">
                 </div>
                 <div class="thumb-name">${item.name}</div>
                 <div class="thumb-price">฿${item.normalPrice || 0}</div>
@@ -493,13 +494,12 @@
         });
     }
 
-    // เลือกเมนูมาโชว์ในภาพใหญ่
+    // สลับแสดงเมนูในภาพใหญ่
     function selectMenu(idx) {
         if (!displayedMenus[idx]) return;
         currentIndex = idx;
         const item = displayedMenus[idx];
 
-        // ไฮไลต์ปุ่มวงกลมที่เลือก พร้อมเลื่อนเข้ามาตรงกลาง
         document.querySelectorAll('.thumb-item').forEach(el => el.classList.remove('active'));
         const activeThumb = document.getElementById(`thumb-${idx}`);
         if (activeThumb) {
@@ -507,21 +507,28 @@
             activeThumb.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
         }
 
-        // เปลี่ยนภาพใหญ่พร้อมเอฟเฟกต์เฟด
         const heroImg = document.getElementById('heroImg');
         heroImg.style.opacity = '0.3';
+        
+        const primarySrc = formatDriveImage(item.imageUrl, false);
+        const altSrc = formatDriveImage(item.imageUrl, true);
+
         setTimeout(() => {
-            heroImg.src = formatDriveImage(item.imageUrl);
-            heroImg.onerror = () => { heroImg.src = FALLBACK_IMG; };
+            heroImg.src = primarySrc;
+            heroImg.onerror = function() {
+                if (this.src !== altSrc) {
+                    this.src = altSrc;
+                } else {
+                    this.src = FALLBACK_IMG;
+                }
+            };
             heroImg.style.opacity = '1';
         }, 120);
 
-        // อัปเดตข้อความ
         document.getElementById('heroName').innerText = item.name;
         document.getElementById('heroPrice').innerText = `฿${item.normalPrice || 0}`;
-        document.getElementById('heroCategory').innerText = item.category || 'เมนูแนะนำ';
+        document.getElementById('heroCategory').innerText = item.category || '';
 
-        // แสดงราคาย่อย (พิเศษ / กับข้าว)
         let subText = '';
         if (item.hasSideDish) {
             subText = `ราดข้าว ฿${item.normalPrice} | กับข้าว ฿${item.sideDishNormalPrice || item.normalPrice}`;
